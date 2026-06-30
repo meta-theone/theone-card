@@ -66,6 +66,10 @@
   .chip{border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:12.5px;background:#fff;color:#4B5563;cursor:pointer;}
   .chip.on{background:var(--brand);color:#fff;border-color:var(--brand);}
   .agree{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--sub);margin-top:10px;}
+  .flab{font-size:11.5px;color:var(--sub);font-weight:600;margin:11px 0 2px;}
+  select.fld{appearance:none;-webkit-appearance:none;background:#fff;}
+  .bankinfo{font-size:11.5px;color:#4B5563;background:#F4F7FB;border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin-top:10px;}
+  .bankinfo b{color:var(--ink);}
   .cta{width:100%;border:none;border-radius:11px;padding:13px;font-size:14.5px;font-weight:600;color:#fff;background:var(--brand);margin-top:12px;cursor:pointer;font-family:inherit;}
   .mgr{text-align:center;margin-top:8px;font-size:11.5px;color:#9aa3b2;}
   .mgr b{color:#4B5563;font-weight:600;}
@@ -174,14 +178,14 @@ function qbtn(fn,icon,label){return '<button class="qbtn" onclick="'+fn+'">'+ico
 function crow(href,icon,lab,val){return '<a class="crow" href="'+href+'"><span class="ci">'+icon+'</span><span><span class="lab">'+lab+'</span><br><span class="val">'+esc(val)+'</span></span></a>';}
 function exrow(id,icon,t,s){
  var body='';
- if(id==='join')body='<input class="fld f-name" placeholder="이름"><input class="fld f-phone" placeholder="연락처"><label class="agree"><input type="checkbox" class="f-agree">개인정보 수집·이용 동의</label><button class="cta" onclick="submitForm(\'가입\',\''+id+'\',this)">신청 보내기</button>';
+ if(id==='join')body='<div class="flab">성명 *</div><input class="fld f-name" placeholder="홍길동"><div class="flab">생년월일</div><input class="fld f-birth" placeholder="예: 1980-01-01" inputmode="numeric"><div class="flab">휴대폰 *</div><input class="fld f-phone" placeholder="010-0000-0000" inputmode="tel"><div class="flab">이메일</div><input class="fld f-email" placeholder="name@email.com"><div class="flab">택배 주소</div><input class="fld f-addr" placeholder="택배 받으실 주소"><div class="flab">추천인</div><input class="fld f-ref" placeholder="추천인 성명"><div class="flab">회원 유형</div><select class="fld f-member"><option>창업회원 · 200,000원</option><option>창업회원 · 400,000원 (+여행바우처)</option><option>일반회원 · 무료</option></select><div class="flab">구성 선택 <span style="color:#9aa3b2;font-weight:400">(창업회원)</span></div><select class="fld f-combo"><option>선택1 · 신미생물효소수 1Box + 다이아몬드 목걸이</option><option>선택2 · 어싱 미네랄 매트 + 다이아몬드 목걸이</option></select><div class="flab">추가 구입 (선택)</div><div class="chips" data-buy=""><span class="chip" data-v="양자제조기 + 미생물효소수 5박스">양자제조기 세트</span><span class="chip" data-v="저주파시계 + 미생물효소수 3박스">저주파시계 세트</span></div><div class="flab">등록 방법</div><select class="fld f-pay"><option>카드</option><option>계좌이체</option><option>현금</option></select><div class="bankinfo">입금계좌 · 세계창업연맹㈜ 기업은행 <b>486-075164-01-011</b></div><label class="agree"><input type="checkbox" class="f-agree">개인정보 수집·이용 동의</label><button class="cta" onclick="submitForm(\'가입\',\''+id+'\',this)">신청 보내기</button>';
  if(id==='prod')body='<select class="fld f-prod"><option value="">제품 선택</option>'+PRODUCTS.map(function(p){return '<option>'+esc(p.name)+'</option>';}).join('')+'</select><input class="fld f-name" placeholder="이름"><input class="fld f-phone" placeholder="연락처"><label class="agree"><input type="checkbox" class="f-agree">개인정보 수집·이용 동의</label><button class="cta" onclick="submitForm(\'제품\',\''+id+'\',this)">신청 보내기</button>';
  if(id==='ins')body='<input class="fld f-name" placeholder="이름"><input class="fld f-phone" placeholder="연락처"><input class="fld f-birth" placeholder="생년월일 또는 연령대"><div class="chips" data-g>'+['건강·실손','암·진단','연금·저축','종신'].map(function(x){return '<span class="chip" data-v="'+x+'">'+x+'</span>';}).join('')+'</div><textarea class="fld f-memo" placeholder="상담 요청 내용" style="min-height:54px"></textarea><label class="agree"><input type="checkbox" class="f-agree">개인정보 수집·이용 동의</label><button class="cta" onclick="submitForm(\'보험\',\''+id+'\',this)">상담 신청</button>';
  return '<div class="ex" id="ex-'+id+'"><div class="exh" onclick="toggleEx(\''+id+'\')"><span class="lead">'+icon+'</span><div style="flex:1"><div class="tt">'+t+'</div><div class="ts">'+s+'</div></div><span class="ch">'+I.chev+'</span></div><div class="exb">'+body+'</div></div>';
 }
 function toggleEx(id){var ex=document.getElementById('ex-'+id),b=ex.querySelector('.exb'),ch=ex.querySelector('.ch');var open=b.style.display==='block';b.style.display=open?'none':'block';ch.style.transform=open?'none':'rotate(180deg)';}
 function openForm(kind,prod){var id=kind==='제품'?'prod':(kind==='보험'?'ins':'join');var ex=document.getElementById('ex-'+id);if(ex){ex.querySelector('.exb').style.display='block';ex.querySelector('.ch').style.transform='rotate(180deg)';if(prod){var sel=ex.querySelector('.f-prod');if(sel){sel.value=prod;}}ex.scrollIntoView({behavior:'smooth',block:'center'});}}
-function bindForms(){document.querySelectorAll('[data-g] .chip').forEach(function(c){c.addEventListener('click',function(){var g=c.parentNode;g.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on')});c.classList.add('on');});});}
+function bindForms(){document.querySelectorAll('[data-g] .chip').forEach(function(c){c.addEventListener('click',function(){var g=c.parentNode;g.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on')});c.classList.add('on');});});document.querySelectorAll('[data-buy] .chip').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('on');});});var rf=document.querySelector('#ex-join .f-ref');if(rf&&!rf.value&&MEMBER){rf.value=MEMBER.name||'';}}
 
 function callOwner(t){var c=MEMBER;if(t==='tel'){if(!c.phone&&!c.tel)return toast('전화번호가 없습니다');location.href='tel:'+clean(c.phone||c.tel);}if(t==='sms'){if(!c.phone)return toast('휴대폰 번호가 없습니다');location.href='sms:'+clean(c.phone);}}
 function kakaoShare(){if(navigator.share){navigator.share({title:MEMBER.name+' 전자명함',text:'상담 문의드립니다.',url:location.href}).catch(function(){});}else{copyLink();toast('링크 복사됨 — 카톡에 붙여넣기');}}
@@ -205,6 +209,13 @@ async function submitForm(type,id,btn){
  var bi=ex.querySelector('.f-birth');if(bi&&bi.value)payload.생년월일=bi.value.trim();
  var mm=ex.querySelector('.f-memo');if(mm&&mm.value)payload.상담내용=mm.value.trim();
  var g=ex.querySelector('[data-g] .chip.on');if(g)payload.관심분야=g.getAttribute('data-v');
+ var em=ex.querySelector('.f-email');if(em&&em.value)payload.이메일=em.value.trim();
+ var ad=ex.querySelector('.f-addr');if(ad&&ad.value)payload.주소=ad.value.trim();
+ var rf=ex.querySelector('.f-ref');if(rf&&rf.value)payload.추천인=rf.value.trim();
+ var mb=ex.querySelector('.f-member');if(mb)payload.회원유형=mb.value;
+ var cb=ex.querySelector('.f-combo');if(mb&&mb.value.indexOf('창업')>=0&&cb)payload.구성=cb.value;
+ var py=ex.querySelector('.f-pay');if(py)payload.등록방법=py.value;
+ var buys=[].slice.call(ex.querySelectorAll('[data-buy] .chip.on')).map(function(x){return x.getAttribute('data-v');});if(buys.length)payload.추가구입=buys;
  btn.disabled=true;var old=btn.textContent;btn.textContent='전송 중…';
  try{var r=await sb.from('submissions').insert({org_id:ORG.id,member_id:MEMBER.id,type:type,payload:payload});if(r.error)throw r.error;
   toast('신청이 접수되었습니다. 곧 연락드리겠습니다.');ex.querySelector('.exb').style.display='none';
