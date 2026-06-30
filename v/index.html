@@ -50,6 +50,9 @@
   .pcimg img{width:100%;height:100%;object-fit:cover;} .pcimg svg{width:30px;height:30px;color:var(--brand);}
   .pc .pn{font-size:13px;font-weight:600;color:var(--ink);padding:9px 11px 0;}
   .pc .pd{font-size:11px;color:var(--sub);padding:2px 11px 9px;line-height:1.4;}
+  .pc{cursor:pointer;} .pc .pmore{font-size:11.5px;font-weight:700;color:var(--brand);padding:0 11px 11px;}
+  .psheet-img{width:100%;aspect-ratio:16/11;border-radius:14px;background:#F4F7FB;overflow:hidden;margin-bottom:14px;display:flex;align-items:center;justify-content:center;}
+  .psheet-img img{width:100%;height:100%;object-fit:cover;} .psheet-img svg{width:42px;height:42px;color:var(--brand);}
   .pc .pb{margin:0 11px 11px;border:1px solid var(--brand);color:var(--brand);background:#fff;border-radius:9px;padding:7px;font-size:12px;cursor:pointer;font-family:inherit;width:calc(100% - 22px);}
   .ex{border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden;background:#fff;}
   .exh{display:flex;align-items:center;gap:11px;padding:14px 15px;cursor:pointer;}
@@ -87,6 +90,15 @@
     <div class="row"><button onclick="copyLink()">링크 복사</button><button class="p" onclick="shareCard()">공유</button></div>
   </div>
 </div>
+<div class="sheet-bg" id="prodsheet" onclick="if(event.target===this)closeProd()">
+  <div class="sheet psheet" style="max-width:340px;text-align:left;">
+    <div class="psheet-img" id="prodImg"></div>
+    <h4 id="prodName" style="font-size:17px;"></h4>
+    <p id="prodDesc" style="text-align:left;color:#4B5563;"></p>
+    <p style="font-size:11px;color:#9aa3b2;text-align:left;margin:-6px 0 0;">상세 사양·구매 안내는 담당자에게 문의해 주세요.</p>
+    <div class="row"><button onclick="closeProd()">닫기</button><button class="p" id="prodApply">신청하기</button></div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -107,6 +119,7 @@ var I={
  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.2-3 7.5-7 9-4-1.5-7-4.8-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>'
 };
 var ORG=null,MEMBER=null,PRODUCTS=[];
+var PRODIMG={'양자제조기':'/assets/prod/p1.jpg','양자건조기':'/assets/prod/p2.jpg','양자매트':'/assets/prod/p3.jpg','어싱 미네랄 매트':'/assets/prod/p4.jpg','산소 양자캡슐':'/assets/prod/p5.jpg','리빙워터':'/assets/prod/p6.jpg'};
 function qp(k,d){return new URLSearchParams(location.search).get(k)||d;}
 function esc(s){return (s||'').replace(/[<>&"]/g,function(c){return{'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];});}
 function clean(p){return (p||'').replace(/[^0-9+]/g,'');}
@@ -128,7 +141,7 @@ function fail(t){document.getElementById('loading').textContent=t;}
 function render(){
  var c=MEMBER,brand=(ORG.theme&&ORG.theme.brand)||'#2563EB';
  document.documentElement.style.setProperty('--brand',brand);
- var prods=PRODUCTS.map(function(p){var img=p.image_url?'<img src="'+esc(p.image_url)+'" alt="">':I.box;return '<div class="pc"><div class="pcimg">'+img+'</div><div class="pn">'+esc(p.name)+'</div><div class="pd">'+esc(p.description||'')+'</div><button class="pb" onclick="openForm(\'제품\')">신청</button></div>';}).join('');
+ var prods=PRODUCTS.map(function(p,i){var src=p.image_url||PRODIMG[p.name]||'';var img=src?'<img src="'+esc(src)+'" alt="'+esc(p.name)+'">':I.box;return '<div class="pc" onclick="openProd('+i+')"><div class="pcimg">'+img+'</div><div class="pn">'+esc(p.name)+'</div><div class="pd">'+esc(p.description||'')+'</div><div class="pmore">자세히 보기 ›</div></div>';}).join('');
  var contacts='';
  if(c.tel)contacts+=crow('tel:'+clean(c.tel),I.phone,'회사 전화',c.tel);
  if(c.email)contacts+=crow('mailto:'+c.email,I.mail,'이메일',c.email);
@@ -167,7 +180,7 @@ function exrow(id,icon,t,s){
  return '<div class="ex" id="ex-'+id+'"><div class="exh" onclick="toggleEx(\''+id+'\')"><span class="lead">'+icon+'</span><div style="flex:1"><div class="tt">'+t+'</div><div class="ts">'+s+'</div></div><span class="ch">'+I.chev+'</span></div><div class="exb">'+body+'</div></div>';
 }
 function toggleEx(id){var ex=document.getElementById('ex-'+id),b=ex.querySelector('.exb'),ch=ex.querySelector('.ch');var open=b.style.display==='block';b.style.display=open?'none':'block';ch.style.transform=open?'none':'rotate(180deg)';}
-function openForm(kind){var id=kind==='제품'?'prod':(kind==='보험'?'ins':'join');var ex=document.getElementById('ex-'+id);if(ex){ex.querySelector('.exb').style.display='block';ex.querySelector('.ch').style.transform='rotate(180deg)';ex.scrollIntoView({behavior:'smooth',block:'center'});}}
+function openForm(kind,prod){var id=kind==='제품'?'prod':(kind==='보험'?'ins':'join');var ex=document.getElementById('ex-'+id);if(ex){ex.querySelector('.exb').style.display='block';ex.querySelector('.ch').style.transform='rotate(180deg)';if(prod){var sel=ex.querySelector('.f-prod');if(sel){sel.value=prod;}}ex.scrollIntoView({behavior:'smooth',block:'center'});}}
 function bindForms(){document.querySelectorAll('[data-g] .chip').forEach(function(c){c.addEventListener('click',function(){var g=c.parentNode;g.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on')});c.classList.add('on');});});}
 
 function callOwner(t){var c=MEMBER;if(t==='tel'){if(!c.phone&&!c.tel)return toast('전화번호가 없습니다');location.href='tel:'+clean(c.phone||c.tel);}if(t==='sms'){if(!c.phone)return toast('휴대폰 번호가 없습니다');location.href='sms:'+clean(c.phone);}}
@@ -176,6 +189,8 @@ function vcard(){var c=MEMBER;var L=['BEGIN:VCARD','VERSION:3.0','N:;'+(c.name||
 function saveVCard(){var b=new Blob([vcard()],{type:'text/vcard;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=(MEMBER.name||'명함')+'.vcf';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},800);toast('연락처를 저장했습니다');}
 function openQR(){document.getElementById('qrName').textContent=MEMBER.name+' 명함';var box=document.getElementById('qrbox');box.innerHTML='';if(window.QRCode){try{new QRCode(box,{text:location.href,width:188,height:188,correctLevel:QRCode.CorrectLevel.M});}catch(e){box.innerHTML='QR 생성 실패';}}document.getElementById('qrsheet').classList.add('open');}
 function closeQR(){document.getElementById('qrsheet').classList.remove('open');}
+function openProd(i){var p=PRODUCTS[i];if(!p)return;var src=p.image_url||PRODIMG[p.name]||'';document.getElementById('prodName').textContent=p.name;document.getElementById('prodDesc').textContent=p.description||'';var im=document.getElementById('prodImg');im.innerHTML=src?'<img src="'+esc(src)+'" alt="">':I.box;document.getElementById('prodApply').onclick=function(){closeProd();openForm('제품',p.name);};document.getElementById('prodsheet').classList.add('open');}
+function closeProd(){document.getElementById('prodsheet').classList.remove('open');}
 function copyLink(){var t=location.href;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){toast('링크가 복사되었습니다');}).catch(fb);}else fb();function fb(){var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('링크가 복사되었습니다');}catch(e){}ta.remove();}}
 function shareCard(){if(navigator.share){navigator.share({title:MEMBER.name+' 전자명함',url:location.href}).catch(function(){});}else copyLink();}
 
