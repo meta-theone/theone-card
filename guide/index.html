@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#4FA38C">
+<title>전자명함 안내</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{--mint:#4FA38C;--mint-d:#3C8A75;--camel:#D4A574;--ink:#2C2C2C;--sub:#6B6B6B;--line:#E5E8EE;--bg:#F5F5F7;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;} html,body{margin:0;padding:0;}
+  body{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:480px;margin:0 auto;min-height:100vh;}
+  .hero{background:#fff;padding:28px 22px 24px;border-bottom:1px solid var(--line);}
+  .eyebrow{font-size:12px;font-weight:800;color:var(--mint-d);letter-spacing:.3px;}
+  .hero h1{margin:10px 0 0;font-size:25px;letter-spacing:-.4px;line-height:1.32;}
+  .hero .intro{margin:12px 0 0;font-size:13.5px;color:var(--sub);}
+  .body{padding:18px;}
+  .cta{display:block;width:100%;text-align:center;text-decoration:none;background:var(--mint);color:#fff;font-size:16px;font-weight:800;border-radius:14px;padding:16px;box-shadow:0 8px 20px rgba(79,163,140,.28);}
+  .cta.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none;margin-top:10px;font-weight:700;font-size:14px;}
+  .sec{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:14px;}
+  .sec h2{margin:0 0 6px;font-size:15px;font-weight:800;}
+  .step{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid #F1F3F7;}
+  .step:first-of-type{border-top:none;}
+  .step .no{width:28px;height:28px;border-radius:50%;background:#EAF3F0;color:var(--mint-d);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex:none;}
+  .step .t{font-size:14px;font-weight:700;} .step .d{font-size:12.5px;color:var(--sub);margin-top:1px;}
+  .benefit{font-size:13px;color:#3a3e52;padding:5px 0 5px 18px;position:relative;}
+  .benefit:before{content:"";position:absolute;left:0;top:11px;width:7px;height:7px;border-radius:2px;background:var(--camel);}
+  .foot{text-align:center;color:#9aa1b2;font-size:11.5px;padding:22px;}
+  .loading{padding:70px 20px;text-align:center;color:var(--sub);font-size:14px;}
+  .hidden{display:none!important;}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="loading" id="loading">불러오는 중…</div><div id="app" class="hidden"></div></div>
+<script>
+var sb=window.supabase.createClient('https://tynqmbmwvrkjzscvrree.supabase.co','sb_publishable_4XgU_L-7zywgwRfkxtf4tQ_jMkE2Uku');
+function qp(k,d){return new URLSearchParams(location.search).get(k)||d;}
+function esc(s){return (s||'').replace(/[<>&"]/g,function(c){return{'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];});}
+(async function(){
+ var o=qp('o','scf');
+ var org=(await sb.from('organizations').select('id,name,intro').eq('slug',o).maybeSingle()).data;
+ if(!org){document.getElementById('loading').textContent='단체를 찾을 수 없습니다.';return;}
+ var mem=(await sb.from('members').select('slug').eq('org_id',org.id).limit(1)).data;
+ var sample=(mem&&mem[0])?('/'+o+'/'+mem[0].slug):'';
+ var make='/'+o+'/join';
+ var html=''+
+ '<div class="hero"><div class="eyebrow">'+esc(org.name)+' · 전자명함</div>'+
+   '<h1>내 전자명함,<br>1분이면 만듭니다</h1>'+
+   '<div class="intro">'+esc(org.intro||'')+'</div></div>'+
+ '<div class="body">'+
+   '<a class="cta" href="'+make+'">내 명함 만들기</a>'+
+   (sample?'<a class="cta ghost" href="'+sample+'">샘플 명함 먼저 보기</a>':'')+
+   '<div class="sec"><h2>이렇게 만들어요</h2>'+
+     '<div class="step"><div class="no">1</div><div><div class="t">정보 입력</div><div class="d">사진 고르고 이름·휴대폰만 넣으면 끝 (나머지는 선택)</div></div></div>'+
+     '<div class="step"><div class="no">2</div><div><div class="t">명함 완성</div><div class="d">나만의 명함 링크와 QR이 자동으로 만들어집니다</div></div></div>'+
+     '<div class="step"><div class="no">3</div><div><div class="t">공유</div><div class="d">링크·QR을 카톡·문자로 보내면, 받은 분은 전화·저장까지 한 번에</div></div></div>'+
+   '</div>'+
+   '<div class="sec"><h2>명함에서 바로 되는 것</h2>'+
+     '<div class="benefit">종이 명함 없이 링크 하나로 내 연락처 전달</div>'+
+     '<div class="benefit">제휴 상품 확인 및 구매 신청</div>'+
+     '<div class="benefit">협동조합 가입 신청</div>'+
+     '<div class="benefit">보험 상담 신청</div>'+
+   '</div>'+
+   '<a class="cta" href="'+make+'" style="margin-top:16px;">지금 내 명함 만들기</a>'+
+ '</div>'+
+ '<div class="foot">더원사업단</div>';
+ var app=document.getElementById('app');app.innerHTML=html;app.classList.remove('hidden');
+ document.getElementById('loading').classList.add('hidden');
+ document.title=org.name+' 전자명함 안내';
+})();
+</script>
+</body>
+</html>

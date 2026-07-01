@@ -1,7 +1,8 @@
-// theone-card Worker - clean path routing + legacy query compatibility
-// /{org}          -> create card form (join_code auto-injected)
-// /{org}/{member} -> view card
-// /admin , /v/?... , /new/?... , / (hub) -> served as before
+// theone-card Worker - clean path routing
+// /{org}          -> 회원 안내 페이지 (guide)
+// /{org}/join     -> 명함 만들기 폼 (join_code auto-injected)
+// /{org}/{member} -> 명함 보기 (viewer)
+// /admin , /v/?... , /new/?... , /guide/?... , / (hub) -> 기존대로
 const SB_URL = 'https://tynqmbmwvrkjzscvrree.supabase.co';
 const SB_KEY = 'sb_publishable_4XgU_L-7zywgwRfkxtf4tQ_jMkE2Uku';
 
@@ -12,19 +13,18 @@ export default {
     const last = segs.length ? segs[segs.length - 1] : '';
     const hasDot = last.includes('.');
 
-    if (segs.length === 0 || hasDot || segs[0] === 'v' || segs[0] === 'new' || segs[0] === 'assets') {
+    if (segs.length === 0 || hasDot || segs[0] === 'v' || segs[0] === 'new' || segs[0] === 'assets' || segs[0] === 'guide') {
       return env.ASSETS.fetch(request);
     }
-
     if (segs[0] === 'admin') {
       return env.ASSETS.fetch(new Request(url.origin + '/admin/index.html'));
     }
-
-    if (segs.length >= 2) {
+    // 명함 보기: /{org}/{member}  (member != 'join')
+    if (segs.length >= 2 && segs[1] !== 'join') {
       const q = '?o=' + encodeURIComponent(segs[0]) + '&m=' + encodeURIComponent(segs[1]);
       return serveInjected(env, url.origin, '/v/index.html', q);
     }
-
+    // 안내(/{org}) 와 폼(/{org}/join) 은 가입코드가 필요
     const org = segs[0];
     let code = '';
     try {
@@ -35,7 +35,10 @@ export default {
       if (Array.isArray(j) && j[0] && j[0].join_code) code = j[0].join_code;
     } catch (e) {}
     const q = '?o=' + encodeURIComponent(org) + (code ? '&code=' + encodeURIComponent(code) : '');
-    return serveInjected(env, url.origin, '/new/index.html', q);
+    if (segs.length >= 2 && segs[1] === 'join') {
+      return serveInjected(env, url.origin, '/new/index.html', q);
+    }
+    return serveInjected(env, url.origin, '/guide/index.html', q);
   }
 };
 

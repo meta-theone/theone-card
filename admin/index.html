@@ -11,31 +11,30 @@
   *{box-sizing:border-box;} html,body{margin:0;padding:0;}
   body{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;}
   .wrap{max-width:980px;margin:0 auto;padding:16px;}
-  /* 로그인 */
-  .login{max-width:380px;margin:8vh auto;background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:30px 26px;}
+  .login{max-width:400px;margin:6vh auto;background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:30px 26px;}
   .login h1{font-size:19px;margin:0 0 4px;} .login p{color:var(--sub);font-size:13px;margin:0 0 20px;}
   .fld{margin-bottom:12px;} .fld label{display:block;font-size:12px;font-weight:700;color:#454a60;margin-bottom:5px;}
-  input{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:12px;font-size:15px;font-family:inherit;outline:none;}
-  input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(61,111,180,.15);}
+  input,select{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:12px;font-size:15px;font-family:inherit;outline:none;background:#fff;}
+  input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(61,111,180,.15);}
   .btn{width:100%;border:none;border-radius:11px;padding:13px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:6px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;}
   .btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);}
+  .sep{border:none;border-top:1px solid var(--line);margin:18px 0 14px;}
+  .seglab{font-size:12px;font-weight:800;color:var(--sub);margin-bottom:8px;}
   .msg{font-size:12.5px;margin-top:10px;padding:10px;border-radius:9px;display:none;}
   .msg.err{background:#fdeceb;color:var(--danger);display:block;} .msg.ok{background:#eaf6f1;color:var(--ok);display:block;}
-  .linkbtn{background:none;border:none;color:var(--blue);font-size:12.5px;cursor:pointer;text-decoration:underline;padding:0;margin-top:12px;font-family:inherit;}
-  /* 헤더 */
   .top{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;border-radius:16px;padding:16px 20px;box-shadow:var(--shadow);}
   .top h1{font-size:17px;margin:0;} .top .who{font-size:12px;opacity:.9;margin-top:3px;}
   .top .badge{display:inline-block;background:rgba(255,255,255,.18);padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700;margin-left:6px;}
   .top button{background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:9px;padding:8px 13px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
-  /* 통계 */
+  .card2{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:20px;margin-top:14px;}
+  .panel-h{font-size:14px;font-weight:800;margin:18px 0 10px;display:flex;align-items:center;gap:8px;}
+  .panel-h .cnt{background:var(--warn);color:#fff;font-size:11px;font-weight:800;padding:1px 8px;border-radius:999px;}
   .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0;}
   .stat{background:var(--card);border-radius:13px;padding:14px;box-shadow:var(--shadow);} .stat .n{font-size:22px;font-weight:800;} .stat .l{font-size:11.5px;color:var(--sub);margin-top:2px;}
   .stat .n.w{color:var(--warn);} .stat .n.o{color:var(--ok);}
-  /* 필터 */
   .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
-  .filters select{border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13px;font-family:inherit;background:#fff;}
-  .filters .sp{flex:1;} .filters button{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
-  /* 목록 */
+  .filters select{width:auto;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13px;font-family:inherit;background:#fff;}
+  .filters .sp{flex:1;} .filters button{width:auto;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
   .list{display:flex;flex-direction:column;gap:10px;}
   .item{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:14px 16px;}
   .item .row1{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
@@ -45,8 +44,14 @@
   .item .when{margin-left:auto;color:#9aa1b2;font-size:11.5px;}
   .item .det{margin-top:8px;font-size:12.5px;color:#3a3e52;background:#f6f8fc;border-radius:9px;padding:9px 11px;white-space:pre-wrap;word-break:break-word;}
   .item .ctl{display:flex;align-items:center;gap:8px;margin-top:10px;}
-  .item .ctl .ref{font-size:12px;color:var(--sub);} .item .ctl select{margin-left:auto;border:1.5px solid var(--line);border-radius:9px;padding:7px 10px;font-size:12.5px;font-family:inherit;}
-  .empty{text-align:center;color:var(--sub);padding:40px;font-size:14px;}
+  .item .ctl .ref{font-size:12px;color:var(--sub);} .item .ctl select{width:auto;margin-left:auto;border:1.5px solid var(--line);border-radius:9px;padding:7px 10px;font-size:12.5px;font-family:inherit;}
+  .pend .who2{font-weight:800;font-size:15px;} .pend .em{color:var(--sub);font-size:12.5px;}
+  .pend .req{font-size:12px;color:var(--sub);margin-top:2px;}
+  .pend .act{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+  .abtn{border:none;border-radius:9px;padding:8px 12px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;background:var(--ok);color:#fff;}
+  .abtn.blue{background:var(--blue);} .abtn.rej{background:#fff;color:var(--danger);border:1.5px solid #f0c8c4;}
+  .empty{text-align:center;color:var(--sub);padding:34px;font-size:14px;}
+  .note{font-size:12px;color:var(--sub);margin-top:6px;}
   .hidden{display:none!important;}
 </style>
 </head>
@@ -57,7 +62,11 @@
   <div class="fld"><label>이메일</label><input type="email" id="email" placeholder="name@email.com" autocomplete="username"></div>
   <div class="fld"><label>비밀번호</label><input type="password" id="pw" placeholder="6자 이상" autocomplete="current-password"></div>
   <button class="btn" id="loginBtn" onclick="doLogin()">로그인</button>
-  <button class="btn ghost" onclick="doSignup()" style="margin-top:8px;">처음이세요? 계정 만들기</button>
+  <hr class="sep">
+  <div class="seglab">처음이세요? 아래 정보로 가입 신청 (대표님 승인 후 이용)</div>
+  <div class="fld"><label>이름</label><input type="text" id="sname" placeholder="성함"></div>
+  <div class="fld"><label>소속 단체</label><select id="sorg"><option value="">단체 선택</option></select></div>
+  <button class="btn ghost" id="signupBtn" onclick="doSignup()">계정 만들기 (승인 대기)</button>
   <div class="msg" id="loginMsg"></div>
 </div>
 
@@ -67,12 +76,23 @@
     <button onclick="doLogout()">로그아웃</button>
   </div>
 
-  <div id="noperm" class="hidden" style="background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:24px;margin-top:14px;">
-    <b>아직 권한이 없습니다.</b>
-    <p style="color:#6A7088;font-size:13px;">로그인 계정 <b id="npEmail"></b> 에 권한을 부여해야 신청을 볼 수 있습니다.<br>대표님(또는 관리자)이 권한을 지정하면 새로고침 후 보입니다.</p>
+  <div id="pendingView" class="hidden card2">
+    <b>승인 대기 중입니다.</b>
+    <p style="color:#6A7088;font-size:13px;margin:6px 0 0;">가입 신청이 접수되었습니다. <b>대표님 승인 후</b> 신청 현황을 보실 수 있습니다.<br>승인되면 새로고침 시 바로 열립니다.</p>
+  </div>
+
+  <div id="noperm" class="hidden card2">
+    <b>권한이 없습니다.</b>
+    <p style="color:#6A7088;font-size:13px;margin:6px 0 0;">이 계정(<b id="npEmail"></b>)에 연결된 가입 정보가 없습니다. 로그아웃 후 <b>계정 만들기</b>로 소속 단체를 선택해 다시 신청해 주세요.</p>
+  </div>
+
+  <div id="approvePanel" class="hidden">
+    <div class="panel-h">승인 대기 <span class="cnt" id="pendCnt">0</span></div>
+    <div class="list" id="pendList"></div>
   </div>
 
   <div id="dash" class="hidden">
+    <div class="panel-h" id="dashH">신청 현황</div>
     <div class="stats">
       <div class="stat"><div class="n" id="sTotal">0</div><div class="l">전체</div></div>
       <div class="stat"><div class="n w" id="sWait">0</div><div class="l">대기</div></div>
@@ -94,19 +114,31 @@
 var SB_URL='https://tynqmbmwvrkjzscvrree.supabase.co';
 var SB_KEY='sb_publishable_4XgU_L-7zywgwRfkxtf4tQ_jMkE2Uku';
 var sb=window.supabase.createClient(SB_URL,SB_KEY);
-var PROFILE=null, ROWS=[], STATUSES=['대기','상담중','완료','계약'];
+var PROFILE=null, ROWS=[], ORGS=[], STATUSES=['대기','상담중','완료','계약'];
 
 function esc(s){return (s||'').replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];});}
 function msg(t,cls){var m=document.getElementById('loginMsg');m.textContent=t;m.className='msg '+cls;}
+function show(v){ document.getElementById('loginView').classList.toggle('hidden',v!=='login'); document.getElementById('appView').classList.toggle('hidden',v!=='app'); }
+
+async function loadOrgs(){
+  var r=await sb.from('organizations').select('id,name').order('name'); ORGS=r.data||[];
+  var sel=document.getElementById('sorg');
+  sel.innerHTML='<option value="">단체 선택</option>'+ORGS.map(function(o){return '<option value="'+o.id+'">'+esc(o.name)+'</option>';}).join('');
+}
 
 async function doSignup(){
   var e=document.getElementById('email').value.trim(), p=document.getElementById('pw').value;
+  var name=document.getElementById('sname').value.trim(), org=document.getElementById('sorg').value;
   if(!e||!p)return msg('이메일과 비밀번호를 입력하세요','err');
-  document.getElementById('loginBtn').disabled=true;
+  if(!name)return msg('이름을 입력하세요','err');
+  if(!org)return msg('소속 단체를 선택하세요','err');
+  try{ localStorage.setItem('pendingReg', JSON.stringify({name:name,org_id:org})); }catch(x){}
+  document.getElementById('signupBtn').disabled=true;
   var r=await sb.auth.signUp({email:e,password:p});
-  document.getElementById('loginBtn').disabled=false;
+  document.getElementById('signupBtn').disabled=false;
   if(r.error)return msg(r.error.message,'err');
-  if(r.data.session){ boot(); } else { msg('계정이 만들어졌습니다. 이제 로그인하세요. (메일 확인이 필요하면 메일함 확인)','ok'); }
+  if(r.data.session){ boot(); }
+  else { msg('가입 신청 완료. 메일 확인 후 로그인하면 승인 대기로 등록됩니다.','ok'); }
 }
 async function doLogin(){
   var e=document.getElementById('email').value.trim(), p=document.getElementById('pw').value;
@@ -119,6 +151,17 @@ async function doLogin(){
 }
 async function doLogout(){ await sb.auth.signOut(); location.reload(); }
 
+async function ensureProfile(u){
+  // 프로필 없으면, 가입 시 저장해둔 정보로 '대기' 프로필 생성
+  var pend=null; try{ pend=JSON.parse(localStorage.getItem('pendingReg')||'null'); }catch(x){}
+  if(!pend) return null;
+  var ins=await sb.from('profiles').insert({id:u.id,email:u.email,name:pend.name,org_id:pend.org_id,role:'pending'});
+  try{ localStorage.removeItem('pendingReg'); }catch(x){}
+  if(ins.error) return null;
+  var pr=await sb.from('profiles').select('*, organizations(name)').eq('id',u.id).maybeSingle();
+  return pr.data;
+}
+
 async function boot(){
   var sess=(await sb.auth.getSession()).data.session;
   if(!sess){ show('login'); return; }
@@ -128,25 +171,57 @@ async function boot(){
   document.getElementById('npEmail').textContent=u.email;
   var pr=await sb.from('profiles').select('*, organizations(name)').eq('id',u.id).maybeSingle();
   PROFILE=pr.data;
-  if(!PROFILE){ document.getElementById('noperm').classList.remove('hidden'); document.getElementById('dash').classList.add('hidden'); document.getElementById('roleBadge').textContent='권한없음'; return; }
-  document.getElementById('noperm').classList.add('hidden'); document.getElementById('dash').classList.remove('hidden');
-  var roleTxt = PROFILE.role==='super'?'슈퍼관리자(전체)':(PROFILE.role==='org_admin'?'단체관리자':'상담담당');
+  if(!PROFILE){ PROFILE=await ensureProfile(u); }
+  // 초기화: 모든 뷰 숨김
+  ['pendingView','noperm','approvePanel','dash'].forEach(function(id){document.getElementById(id).classList.add('hidden');});
+  if(!PROFILE){ document.getElementById('noperm').classList.remove('hidden'); document.getElementById('roleBadge').textContent='권한없음'; return; }
+  if(PROFILE.role==='pending'){ document.getElementById('pendingView').classList.remove('hidden'); document.getElementById('roleBadge').textContent='승인 대기'; if(PROFILE.organizations)document.getElementById('whoami').textContent=u.email+' · '+PROFILE.organizations.name+' (신청)'; return; }
+  var roleTxt = PROFILE.role==='super'?'슈퍼관리자(전체)':(PROFILE.role==='org_admin'?'단체관리자':'담당');
   document.getElementById('roleBadge').textContent=roleTxt;
   if(PROFILE.organizations) document.getElementById('whoami').textContent=u.email+' · '+PROFILE.organizations.name;
-  // 슈퍼면 단체 필터 노출
   if(PROFILE.role==='super'){
-    var orgs=await sb.from('organizations').select('id,name').order('name');
     var sel=document.getElementById('fOrg'); sel.classList.remove('hidden');
-    sel.innerHTML='<option value="">전체 단체</option>'+(orgs.data||[]).map(function(o){return '<option value="'+o.id+'">'+esc(o.name)+'</option>';}).join('');
+    sel.innerHTML='<option value="">전체 단체</option>'+ORGS.map(function(o){return '<option value="'+o.id+'">'+esc(o.name)+'</option>';}).join('');
+    document.getElementById('approvePanel').classList.remove('hidden');
+    loadPending();
   }
+  document.getElementById('dash').classList.remove('hidden');
   reload();
 }
+
+async function loadPending(){
+  var r=await sb.from('profiles').select('*, organizations(name)').eq('role','pending').order('created_at',{ascending:true});
+  var rows=r.data||[];
+  document.getElementById('pendCnt').textContent=rows.length;
+  var L=document.getElementById('pendList');
+  if(!rows.length){ L.innerHTML='<div class="empty">승인 대기 중인 계정이 없습니다.</div>'; return; }
+  L.innerHTML=rows.map(function(x){
+    var org=x.organizations?x.organizations.name:'(단체미지정)';
+    return '<div class="item pend"><div class="who2">'+esc(x.name||'(이름없음)')+'</div>'+
+      '<div class="em">'+esc(x.email||'')+'</div>'+
+      '<div class="req">신청 단체: '+esc(org)+'</div>'+
+      '<div class="act"><button class="abtn" onclick="approve(\''+x.id+'\',\'org_admin\')">단체관리자 승인</button>'+
+      '<button class="abtn blue" onclick="approve(\''+x.id+'\',\'super\')">전체관리자 승인</button>'+
+      '<button class="abtn rej" onclick="reject(\''+x.id+'\')">거절</button></div></div>';
+  }).join('');
+}
+async function approve(id,role){
+  var patch={role:role}; if(role==='super') patch.org_id=null;
+  var r=await sb.from('profiles').update(patch).eq('id',id);
+  if(r.error){ alert('승인 실패: '+r.error.message); return; }
+  loadPending();
+}
+async function reject(id){
+  if(!confirm('이 가입 신청을 거절(삭제)할까요?')) return;
+  var r=await sb.from('profiles').delete().eq('id',id);
+  if(r.error){ alert('거절 실패: '+r.error.message); return; }
+  loadPending();
+}
+
 async function reload(){
   var q=sb.from('submissions').select('*, members(name), organizations(name)').order('created_at',{ascending:false});
   if(PROFILE.role==='super'){ var of=document.getElementById('fOrg').value; if(of) q=q.eq('org_id',of); }
-  var r=await q;
-  ROWS=r.data||[];
-  render();
+  var r=await q; ROWS=r.data||[]; render();
 }
 function render(){
   var ft=document.getElementById('fType').value, fs=document.getElementById('fStatus').value;
@@ -157,7 +232,7 @@ function render(){
   if(!rows.length){ L.innerHTML='<div class="empty">표시할 신청이 없습니다.</div>'; return; }
   L.innerHTML=rows.map(function(x){
     var pay=x.payload||{}; var who=pay['성명']||pay['이름']||'(이름없음)'; var ph=pay['휴대폰']||'';
-    var det=Object.keys(pay).map(function(k){return k+': '+pay[k];}).join('\n');
+    var det=Object.keys(pay).map(function(k){return k+': '+(typeof pay[k]==='object'?JSON.stringify(pay[k]):pay[k]);}).join('\n');
     var when=new Date(x.created_at).toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
     var org=x.organizations?x.organizations.name:''; var ref=x.members?x.members.name:'';
     var opts=STATUSES.map(function(s){return '<option'+(s===x.status?' selected':'')+'>'+s+'</option>';}).join('');
@@ -173,8 +248,8 @@ async function setStatus(id,st){
   if(r.error){ alert('변경 실패: '+r.error.message); return; }
   var it=ROWS.find(function(x){return x.id===id;}); if(it) it.status=st; render();
 }
-function show(v){ document.getElementById('loginView').classList.toggle('hidden',v!=='login'); document.getElementById('appView').classList.toggle('hidden',v!=='app'); }
 
+loadOrgs();
 boot();
 </script>
 </body>
