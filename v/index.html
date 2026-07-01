@@ -127,6 +127,7 @@ var PRODIMG={'양자제조기':'/assets/prod/p1.jpg','양자건조기':'/assets/
 function qp(k,d){return new URLSearchParams(location.search).get(k)||d;}
 function esc(s){return (s||'').replace(/[<>&"]/g,function(c){return{'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];});}
 function clean(p){return (p||'').replace(/[^0-9+]/g,'');}
+function fmtPhone(p){var d=(p||'').replace(/[^0-9]/g,'');if(d.length===11)return d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7);if(d.length===10)return d.slice(0,3)+'-'+d.slice(3,6)+'-'+d.slice(6);if(d.length===8)return d.slice(0,4)+'-'+d.slice(4);return p||'';}
 function initial(n){return (n||'?').trim().charAt(0)||'?';}
 
 async function init(){
@@ -147,7 +148,7 @@ function render(){
  document.documentElement.style.setProperty('--brand',brand);
  var prods=PRODUCTS.map(function(p,i){var src=p.image_url||PRODIMG[p.name]||'';var img=src?'<img src="'+esc(src)+'" alt="'+esc(p.name)+'">':I.box;return '<div class="pc" onclick="openProd('+i+')"><div class="pcimg">'+img+'</div><div class="pn">'+esc(p.name)+'</div><div class="pd">'+esc(p.description||'')+'</div><div class="pmore">자세히 보기 ›</div></div>';}).join('');
  var contacts='';
- if(c.tel)contacts+=crow('tel:'+clean(c.tel),I.phone,'회사 전화',c.tel);
+ if(c.phone)contacts+=crow('tel:'+clean(c.phone),I.phone,'휴대폰',fmtPhone(c.phone));if(c.tel)contacts+=crow('tel:'+clean(c.tel),I.phone,'회사 전화',fmtPhone(c.tel));
  if(c.email)contacts+=crow('mailto:'+c.email,I.mail,'이메일',c.email);
  if(c.address)contacts+='<a class="crow" href="https://map.kakao.com/?q='+encodeURIComponent(c.address)+'" target="_blank" rel="noopener"><span class="ci">'+I.pin+'</span><span><span class="lab">주소</span><br><span class="val">'+esc(c.address)+'</span></span></a>';
  var html=''+
