@@ -92,7 +92,10 @@
   </div>
 
   <div id="dash" class="hidden">
-    <div class="panel-h" id="dashH">신청 현황</div>
+    <div class="panel-h">매출 실적 <span style="font-size:11px;color:#9aa1b2;font-weight:600;">(승인된 주문 기준)</span></div>
+    <div class="filters"><select id="salesPeriod" onchange="renderSales()"><option value="today">오늘</option><option value="week">이번주</option><option value="month" selected>이번달</option><option value="year">올해</option><option value="all">전체</option></select><span class="sp"></span></div>
+    <div id="salesBox"></div>
+    <div class="panel-h" id="dashH" style="margin-top:20px;">신청·주문 현황</div>
     <div class="stats">
       <div class="stat"><div class="n" id="sTotal">0</div><div class="l">전체</div></div>
       <div class="stat"><div class="n w" id="sWait">0</div><div class="l">대기</div></div>
@@ -114,7 +117,7 @@
 var SB_URL='https://tynqmbmwvrkjzscvrree.supabase.co';
 var SB_KEY='sb_publishable_4XgU_L-7zywgwRfkxtf4tQ_jMkE2Uku';
 var sb=window.supabase.createClient(SB_URL,SB_KEY);
-var PROFILE=null, ROWS=[], ORGS=[], STATUSES=['대기','상담중','완료','계약'];
+var PROFILE=null, ROWS=[], ORGS=[], STATUSES=['대기','승인','상담중','완료','계약','취소'];
 
 function esc(s){return (s||'').replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];});}
 function msg(t,cls){var m=document.getElementById('loginMsg');m.textContent=t;m.className='msg '+cls;}
@@ -224,7 +227,7 @@ async function reject(id){
 async function reload(){
   var q=sb.from('submissions').select('*, members(name), organizations(name)').order('created_at',{ascending:false});
   if(PROFILE.role==='super'){ var of=document.getElementById('fOrg').value; if(of) q=q.eq('org_id',of); }
-  var r=await q; ROWS=r.data||[]; render();
+  var r=await q; ROWS=r.data||[]; render(); renderSales();
 }
 function render(){
   var ft=document.getElementById('fType').value, fs=document.getElementById('fStatus').value;
@@ -245,6 +248,34 @@ function render(){
       '<div class="ctl"><span class="ref">추천인: '+esc(ref||'-')+'</span>'+
       '<select onchange="setStatus(\''+x.id+'\',this.value)">'+opts+'</select></div></div>';
   }).join('');
+}
+function renderSales(){
+  var p=(document.getElementById('salesPeriod')||{}).value||'month';
+  var now=new Date(), start;
+  if(p==='today') start=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  else if(p==='week'){var d=now.getDay()||7; start=new Date(now.getFullYear(),now.getMonth(),now.getDate()-d+1);}
+  else if(p==='month') start=new Date(now.getFullYear(),now.getMonth(),1);
+  else if(p==='year') start=new Date(now.getFullYear(),0,1);
+  else start=new Date(0);
+  var by={}, total=0, cnt=0;
+  ROWS.forEach(function(x){
+    if(x.type!=='제품'||x.status!=='승인') return;
+    if(new Date(x.created_at)<start) return;
+    var amt=Number((x.payload||{})['금액'])||0;
+    var name=x.members?x.members.name:'(미상)';
+    if(!by[name]) by[name]={amt:0,cnt:0};
+    by[name].amt+=amt; by[name].cnt++; total+=amt; cnt++;
+  });
+  var names=Object.keys(by).sort(function(a,b){return by[b].amt-by[a].amt;});
+  var box=document.getElementById('salesBox'); if(!box) return;
+  var h='<div class="item"><div style="font-weight:800;font-size:16px;">총 매출 '+total.toLocaleString()+'원 <span style="color:#6A7088;font-weight:600;font-size:12px;">('+cnt+'건)</span></div>';
+  if(!names.length){ h+='<div class="empty" style="padding:16px;">해당 기간 승인된 주문이 없습니다.</div>'; }
+  else{
+    h+='<table style="width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;"><tr style="color:#6A7088;font-size:11.5px;"><th style="padding:6px 4px;text-align:left;">사업자</th><th style="padding:6px 4px;text-align:right;">건수</th><th style="padding:6px 4px;text-align:right;">매출</th></tr>';
+    h+=names.map(function(n){return '<tr style="border-top:1px solid #eef2f8;"><td style="padding:8px 4px;font-weight:700;">'+esc(n)+'</td><td style="padding:8px 4px;text-align:right;">'+by[n].cnt+'</td><td style="padding:8px 4px;text-align:right;font-weight:700;">'+by[n].amt.toLocaleString()+'원</td></tr>';}).join('');
+    h+='</table>';
+  }
+  h+='</div>'; box.innerHTML=h;
 }
 async function setStatus(id,st){
   var r=await sb.from('submissions').update({status:st}).eq('id',id);
