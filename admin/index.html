@@ -63,7 +63,7 @@
   <div class="fld"><label>비밀번호</label><input type="password" id="pw" placeholder="6자 이상" autocomplete="current-password"></div>
   <button class="btn" id="loginBtn" onclick="doLogin()">로그인</button>
   <hr class="sep">
-  <div class="seglab">처음이세요? 아래 정보로 가입 신청 (대표님 승인 후 이용)</div>
+  <div class="seglab">처음이세요? 아래 정보로 가입 신청 (관리자 승인 후 이용)</div>
   <div class="fld"><label>이름</label><input type="text" id="sname" placeholder="성함"></div>
   <div class="fld"><label>소속 단체</label><select id="sorg"><option value="">단체 선택</option></select></div>
   <button class="btn ghost" id="signupBtn" onclick="doSignup()">계정 만들기 (승인 대기)</button>
@@ -78,7 +78,7 @@
 
   <div id="pendingView" class="hidden card2">
     <b>승인 대기 중입니다.</b>
-    <p style="color:#6A7088;font-size:13px;margin:6px 0 0;">가입 신청이 접수되었습니다. <b>대표님 승인 후</b> 신청 현황을 보실 수 있습니다.<br>승인되면 새로고침 시 바로 열립니다.</p>
+    <p style="color:#6A7088;font-size:13px;margin:6px 0 0;">가입 신청이 접수되었습니다. <b>관리자 승인 후</b> 신청 현황을 보실 수 있습니다.<br>승인되면 새로고침 시 바로 열립니다.</p>
   </div>
 
   <div id="noperm" class="hidden card2">
@@ -182,6 +182,8 @@ async function boot(){
   if(PROFILE.role==='super'){
     var sel=document.getElementById('fOrg'); sel.classList.remove('hidden');
     sel.innerHTML='<option value="">전체 단체</option>'+ORGS.map(function(o){return '<option value="'+o.id+'">'+esc(o.name)+'</option>';}).join('');
+  }
+  if(PROFILE.role==='super'||PROFILE.role==='org_admin'){
     document.getElementById('approvePanel').classList.remove('hidden');
     loadPending();
   }
@@ -197,11 +199,12 @@ async function loadPending(){
   if(!rows.length){ L.innerHTML='<div class="empty">승인 대기 중인 계정이 없습니다.</div>'; return; }
   L.innerHTML=rows.map(function(x){
     var org=x.organizations?x.organizations.name:'(단체미지정)';
+    var superBtn=(PROFILE.role==='super')?'<button class="abtn blue" onclick="approve(\''+x.id+'\',\'super\')">전체관리자 승인</button>':'';
     return '<div class="item pend"><div class="who2">'+esc(x.name||'(이름없음)')+'</div>'+
       '<div class="em">'+esc(x.email||'')+'</div>'+
       '<div class="req">신청 단체: '+esc(org)+'</div>'+
       '<div class="act"><button class="abtn" onclick="approve(\''+x.id+'\',\'org_admin\')">단체관리자 승인</button>'+
-      '<button class="abtn blue" onclick="approve(\''+x.id+'\',\'super\')">전체관리자 승인</button>'+
+      superBtn+
       '<button class="abtn rej" onclick="reject(\''+x.id+'\')">거절</button></div></div>';
   }).join('');
 }
