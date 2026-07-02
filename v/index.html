@@ -84,6 +84,7 @@
   .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#111827;color:#fff;padding:12px 20px;border-radius:999px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:60;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .hidden{display:none!important;}
+  .qtyrow{display:flex;align-items:center;gap:8px;margin-top:8px;} .qtyrow .fld{margin-top:0;} .qtybtn{width:46px;height:46px;border:1px solid var(--line);background:#fff;border-radius:11px;font-size:22px;font-weight:700;color:var(--ink);cursor:pointer;flex:none;line-height:1;} .obuyer{font-size:12.5px;color:var(--sub);margin-top:12px;} .obuyer b{color:var(--ink);}
 </style>
 </head>
 <body>
@@ -129,6 +130,7 @@ function esc(s){return (s||'').replace(/[<>&"]/g,function(c){return{'<':'&lt;','
 function clean(p){return (p||'').replace(/[^0-9+]/g,'');}
 function fmtPhone(p){var d=(p||'').replace(/[^0-9]/g,'');if(d.length===11)return d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7);if(d.length===10)return d.slice(0,3)+'-'+d.slice(3,6)+'-'+d.slice(6);if(d.length===8)return d.slice(0,4)+'-'+d.slice(4);return p||'';}
 function initial(n){return (n||'?').trim().charAt(0)||'?';}
+function qtyStep(btn,d){var i=btn.parentNode.querySelector('.f-qty');var v=(parseInt(i.value,10)||1)+d;if(v<1)v=1;i.value=v;}
 
 async function init(){
  var o=qp('o','scf'),m=qp('m','kgw');
@@ -180,7 +182,7 @@ function crow(href,icon,lab,val){return '<a class="crow" href="'+href+'"><span c
 function exrow(id,icon,t,s){
  var body='';
  if(id==='join')body='<div class="flab">성명 *</div><input class="fld f-name" placeholder="홍길동"><div class="flab">생년월일</div><input class="fld f-birth" placeholder="예: 1980-01-01" inputmode="numeric"><div class="flab">휴대폰 *</div><input class="fld f-phone" placeholder="010-0000-0000" inputmode="tel"><div class="flab">이메일</div><input class="fld f-email" placeholder="name@email.com"><div class="flab">택배 주소</div><input class="fld f-addr" placeholder="택배 받으실 주소"><div class="flab">추천인</div><input class="fld f-ref" placeholder="추천인 성명"><div class="flab">회원 유형</div><select class="fld f-member"><option>창업회원 · 200,000원</option><option>창업회원 · 400,000원 (+여행바우처)</option><option>일반회원 · 무료</option></select><div class="flab">구성 선택 <span style="color:#9aa3b2;font-weight:400">(창업회원)</span></div><select class="fld f-combo"><option>선택1 · 신미생물효소수 1Box + 다이아몬드 목걸이</option><option>선택2 · 어싱 미네랄 매트 + 다이아몬드 목걸이</option></select><div class="flab">추가 구입 (선택)</div><div class="chips" data-buy=""><span class="chip" data-v="양자제조기 + 미생물효소수 5박스">양자제조기 세트</span><span class="chip" data-v="저주파시계 + 미생물효소수 3박스">저주파시계 세트</span></div><div class="flab">등록 방법</div><select class="fld f-pay"><option>카드</option><option>계좌이체</option><option>현금</option></select><div class="bankinfo">입금계좌 · 세계창업연맹㈜ 기업은행 <b>486-075164-01-011</b></div><label class="agree"><input type="checkbox" class="f-agree">개인정보 수집·이용 동의</label><button class="cta" onclick="submitForm(\'가입\',\''+id+'\',this)">신청 보내기</button>';
- if(id==='prod')body='<select class="fld f-prod"><option value="">제품 선택</option>'+PRODUCTS.map(function(p){return '<option>'+esc(p.name)+'</option>';}).join('')+'</select><div class="flab">수량</div><input class="fld f-qty" type="number" min="1" value="1"><div class="flab">금액 (원)</div><input class="fld f-amount" type="number" min="0" inputmode="numeric" placeholder="예: 200000"><div class="flab">주문자 이름</div><input class="fld f-name" placeholder="이름"><input class="fld f-phone" placeholder="연락처"><label class="agree"><input type="checkbox" class="f-agree">개인정보 수집·이용 동의</label><button class="cta" onclick="submitForm(\'제품\',\''+id+'\',this)">신청 보내기</button>';
+ if(id==='prod')body='<select class="fld f-prod"><option value="">제품 선택</option>'+PRODUCTS.map(function(p){return '<option>'+esc(p.name)+'</option>';}).join('')+'</select><div class="flab">수량</div><div class="qtyrow"><button type="button" class="qtybtn" onclick="qtyStep(this,-1)">−</button><input class="fld f-qty" type="number" min="1" value="1" style="text-align:center"><button type="button" class="qtybtn" onclick="qtyStep(this,1)">+</button></div><div class="flab">금액 (원)</div><input class="fld f-amount" type="number" min="0" inputmode="numeric" placeholder="예: 200000"><div class="obuyer">구매자: <b>'+esc(MEMBER.name)+'</b> (이 명함 주인)</div><button class="cta" onclick="submitForm(\'제품\',\''+id+'\',this)">신청 보내기</button>';
  if(id==='ins')body='<input class="fld f-name" placeholder="이름"><input class="fld f-phone" placeholder="연락처"><input class="fld f-birth" placeholder="생년월일 또는 연령대"><div class="chips" data-g>'+['건강·실손','암·진단','연금·저축','종신'].map(function(x){return '<span class="chip" data-v="'+x+'">'+x+'</span>';}).join('')+'</div><textarea class="fld f-memo" placeholder="상담 요청 내용" style="min-height:54px"></textarea><label class="agree"><input type="checkbox" class="f-agree">개인정보 수집·이용 동의</label><button class="cta" onclick="submitForm(\'보험\',\''+id+'\',this)">상담 신청</button>';
  return '<div class="ex" id="ex-'+id+'"><div class="exh" onclick="toggleEx(\''+id+'\')"><span class="lead">'+icon+'</span><div style="flex:1"><div class="tt">'+t+'</div><div class="ts">'+s+'</div></div><span class="ch">'+I.chev+'</span></div><div class="exb">'+body+'</div></div>';
 }
@@ -203,8 +205,8 @@ async function submitForm(type,id,btn){
  var ex=document.getElementById('ex-'+id);
  var name=(ex.querySelector('.f-name')||{}).value||'';name=name.trim();
  var phone=(ex.querySelector('.f-phone')||{}).value||'';phone=phone.trim();
- if(!name)return toast('이름을 입력하세요');if(!phone)return toast('연락처를 입력하세요');
- if(!ex.querySelector('.f-agree').checked)return toast('개인정보 동의가 필요합니다');
+ if(type==='제품'){ if(!name)name=(MEMBER.name||''); } else { if(!name)return toast('이름을 입력하세요'); if(!phone)return toast('연락처를 입력하세요');
+ var ag=ex.querySelector('.f-agree'); if(ag&&!ag.checked)return toast('개인정보 동의가 필요합니다'); }
  var payload={이름:name,휴대폰:phone,담당자:MEMBER.name};
  var pr=ex.querySelector('.f-prod');if(pr&&pr.value)payload.제품=pr.value;
  var qy=ex.querySelector('.f-qty');if(qy&&qy.value)payload.수량=Number(qy.value)||qy.value.trim();
